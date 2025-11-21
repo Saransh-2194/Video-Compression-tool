@@ -67,10 +67,10 @@ else:
                     st.write(f"**Resolution:** {meta['width']} x {meta['height']}")
                     st.write(f"**FPS:** {meta['fps']:.2f}")
                     st.write(f"**Duration:** {meta['duration']:.2f} seconds")
+                    out_path_obj = Path(compat_path)
 
                     # # Playback widget - stream file bytes to Streamlit
                     # st.subheader("Play compressed video")
-                    out_path_obj = Path(compat_path)
                     # if out_path_obj.exists() and out_path_obj.stat().st_size > 0:
                     #     with open(out_path_obj, "rb") as vf:
                     #         video_bytes = vf.read()

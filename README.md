@@ -48,7 +48,7 @@ Notes on ffmpeg:
 1. Open PowerShell and change to the `Project` directory:
 
 ```powershell
-cd "c:\Users\saran\OneDrive\Desktop\JUIT\sem files\sem-5\Multimedia Lab\Project"
+cd "\Project"
 ```
 
 2. Launch the app:
@@ -63,60 +63,19 @@ streamlit run app.py
   - `combined` (frame skip + resolution reduction)
   - `frameskip` (skip frames)
   - `resolution` (scale frames)
-- Optional: use the H.264 re-encode option (if available) to produce a browser-friendly MP4.
-- Press `Compress`. A spinner will show while compression (and optional re-encode) runs.
+- Press `Compress`. A spinner will show while compression runs.
 - The compressed file is saved in `output/` and its properties are displayed. The compressed file is playable in the page and available for download.
 
 ---
 
-## Why the video might show a black player / 0:00
-
-If the Streamlit player shows a black box or `0:00` the browser probably cannot decode the codec/container in the file. Common causes:
-
-- The output MP4 uses a codec not supported by browser players (browsers expect H.264 video + AAC audio in MP4).
-- ffmpeg or MoviePy is not installed/configured, so the optional re-encode step did not produce a browser-compatible file.
-
-Fixes:
-
-- Re-encode the compressed file to H.264/AAC (the app provides an option if MoviePy/ffmpeg are available).
-- Or re-encode manually using ffmpeg:
-
-```powershell
-ffmpeg -i "path\to\input.mp4" -c:v libx264 -preset fast -crf 23 -c:a aac -b:a 128k "path\to\output_h264.mp4"
-```
-
-Then try playing `output_h264.mp4` in the app or directly in the browser/VLC.
-
----
-
-## Internals / Implementation notes
-
-- Compression uses OpenCV's `VideoWriter` with `mp4v` fourcc by default. `mp4v` may not always be browser-friendly.
-- `reencode_to_h264` uses MoviePy (`write_videofile`) with `codec='libx264'` and `audio_codec='aac'` to produce a more compatible MP4. MoviePy must find ffmpeg on PATH.
-- `app.py` verifies that compressed files exist and attempts a quick sanity check (OpenCV read) before calling `st.video`.
-
----
 
 ## Troubleshooting & Tips
 
 - If compression fails or is very slow, try smaller inputs or increase `skip_rate` / reduce `scale_percent`.
-- If re-encoding fails, install ffmpeg and ensure it's in PATH. Test with `ffmpeg -version`.
 - If Streamlit shows no video despite a valid file, open that file directly in VLC or Chrome — if VLC plays it but Chrome does not, re-encode to H.264/AAC.
 - For production or larger workloads, consider running compression in a background worker and streaming progress to Streamlit (using `st.session_state` or polling).
 
----
-
-## Next improvements (suggestions)
-
-- Use ffprobe to display more detailed codec/bitrate metadata.
-- Add background processing + progress updates for long compressions.
-- Provide configurable ffmpeg re-encoding parameters (CRF, preset, audio bitrate).
-- Add unit tests and a `requirements.txt`/`pyproject.toml` file for reproducible installs.
 
 ---
-
-If you want, I can add a `requirements.txt` and a simple test script, or implement the ffmpeg CLI fallback re-encode (recommended for robustness). Which would you like next?
-
----
-Author: Project workspace (Video-Compression-tool)
-Date: November 2025
+Author: Saransh Agarwal & Nandini Garg
+Date: 22 November 2025
